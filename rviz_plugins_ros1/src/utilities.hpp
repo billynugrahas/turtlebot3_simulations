@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef FF_RVIZ_PLUGINS_ROS1__SRC__UTILITIES_HPP
-#define FF_RVIZ_PLUGINS_ROS1__SRC__UTILITIES_HPP
+#ifndef RVIZ_PLUGINS_ROS1__SRC__UTILITIES_HPP
+#define RVIZ_PLUGINS_ROS1__SRC__UTILITIES_HPP
 
 #include <geometry_msgs/Quaternion.h>
 

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5.0)
 
-project(ff_rviz_plugins_ros1)
+project(rviz_plugins_ros1)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -35,6 +35,9 @@ if (catkin_FOUND)
   #find_package(free_fleet REQUIRED)
 
   catkin_package()
+
+  #=============================================================================
+
   
   #=============================================================================
 
