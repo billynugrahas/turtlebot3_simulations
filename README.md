@@ -1,4 +1,9 @@
-# TurtleBot3
+# TurtleBot3 - Multi Robot
+
+see this: https://github.com/ros/robot_state_publisher/pull/169
+clone: 
+`git clone -b noetic-devel https://github.com/ros/robot_state_publisher.git`
+
 <img src="https://github.com/ROBOTIS-GIT/emanual/blob/master/assets/images/platform/turtlebot3/logo_turtlebot3.png" width="300">
 
 ## ROS 1 Packages for TurtleBot3 Simulations

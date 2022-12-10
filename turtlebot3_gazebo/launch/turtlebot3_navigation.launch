@@ -1,0 +1,75 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
+  <arg name="map_file" default="$(find turtlebot3_gazebo)/maps/map_house.yaml"/>
+  <arg name="open_rviz" default="true"/>
+  <arg name="move_forward_only" default="false"/>
+
+  <arg name="first_tb3"  default="tb3_0"/>
+  <arg name="second_tb3"  default="tb3_1"/>
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)" output="screen">
+  </node>
+
+  <group ns = "$(arg first_tb3)">
+    <remap from="map" to="/map"/>
+    
+    <!-- AMCL -->
+    <include file="$(find turtlebot3_navigation)/launch/amcl.launch">
+      <arg name="odom_frame_id" value="$(arg first_tb3)/odom"/>
+      <arg name="base_frame_id" value="$(arg first_tb3)/base_footprint"/>
+      <arg name="scan_topic" value="scan"/>
+		  <arg name="use_map_topic" value="true" />
+      <arg name="global_frame_id" value="/map"/>
+    </include>
+
+    <!-- move_base -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+      <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+      <rosparam file="$(find turtlebot3_gazebo)/tb3_0_sim_param/costmap_common_params_$(arg model).yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find turtlebot3_gazebo)/tb3_0_sim_param/costmap_common_params_$(arg model).yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find turtlebot3_gazebo)/tb3_0_sim_param/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find turtlebot3_gazebo)/tb3_0_sim_param/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find turtlebot3_gazebo)/tb3_0_sim_param/move_base_params.yaml" command="load" />
+      <rosparam file="$(find turtlebot3_gazebo)/tb3_0_sim_param/dwa_local_planner_params_$(arg model).yaml" command="load" />
+
+      <!-- <arg name="global_costmap/global_frame" value="/map"/> -->
+      <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
+    </node>
+  </group>
+
+  <group ns = "$(arg second_tb3)">
+    <remap from="map" to="/map"/>
+
+    <!-- AMCL -->
+    <include file="$(find turtlebot3_navigation)/launch/amcl.launch">
+      <arg name="odom_frame_id" value="$(arg second_tb3)/odom"/>
+      <arg name="base_frame_id" value="$(arg second_tb3)/base_footprint"/>
+      <arg name="scan_topic" value="scan"/>
+		  <arg name="use_map_topic" value="true" />
+      <arg name="global_frame_id" value="/map"/>
+    </include>
+
+    <!-- move_base -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+      <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+      <rosparam file="$(find turtlebot3_gazebo)/tb3_1_sim_param/costmap_common_params_$(arg model).yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find turtlebot3_gazebo)/tb3_1_sim_param/costmap_common_params_$(arg model).yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find turtlebot3_gazebo)/tb3_1_sim_param/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find turtlebot3_gazebo)/tb3_1_sim_param/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find turtlebot3_gazebo)/tb3_1_sim_param/move_base_params.yaml" command="load" />
+      <rosparam file="$(find turtlebot3_gazebo)/tb3_1_sim_param/dwa_local_planner_params_$(arg model).yaml" command="load" />
+
+      <!-- <arg name="global_costmap/global_frame" value="/map"/> -->
+      <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
+    </node>
+  </group>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find turtlebot3_gazebo)/rviz/multi_turtlebot3.rviz"/>
+  </group>
+
+</launch>
